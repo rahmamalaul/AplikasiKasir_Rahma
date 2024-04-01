@@ -291,7 +291,7 @@ try {
     pst = koneksi.prepareStatement(sql);
     pst.setString(1, txtPelanggan.getText());
     pst.execute();
-    JOptionPane.showMessageDialog(null, "Data Berhasil Disimpan");
+    JOptionPane.showMessageDialog(null, "Data Berhasil Dihapus");
 } catch (Exception e) {
     JOptionPane.showMessageDialog(null, "Data Gagal Dihapus");
 }

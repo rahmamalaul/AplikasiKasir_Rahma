@@ -26,6 +26,8 @@ ResultSet rst;
     public FormProduk() {
        initComponents() ;
        konek = Koneksi.koneksiDB();
+       mulai();
+       updateTabel();
 }
        
     public void mulai() {
@@ -281,7 +283,7 @@ try {
     pst = konek.prepareStatement(sql);
     pst.setString(1, txtProduk.getText());
     pst.execute();
-    JOptionPane.showMessageDialog(null, "Data Berhasil Disimpan");
+    JOptionPane.showMessageDialog(null, "Data Berhasil Dihapus");
 } catch (Exception e) {
     JOptionPane.showMessageDialog(null, "Data Gagal Dihapus");
 }

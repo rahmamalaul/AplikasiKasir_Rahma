@@ -25,7 +25,7 @@ public class FormPenjualan extends javax.swing.JFrame {
 Connection konek;
 PreparedStatement pst, pst2;
 ResultSet rst;
-int inputstok, inputsok2, inputharga, inputjumlah, kurangistok, tambahstok;
+int inputstok, inputstok2, inputharga, inputjumlah, kurangistok, tambahstok;
 String harga, idproduk, idprodukpenjualan, iddetail, jam, tanggal, sub_total;
 
     /**
@@ -35,8 +35,8 @@ String harga, idproduk, idprodukpenjualan, iddetail, jam, tanggal, sub_total;
        initComponents() ;
        konek = Koneksi.koneksiDB();
        this.setLocationRelativeTo(null);
-       detail();
        tampilJam();
+       detail();
        autonumber();
        penjumlahan();
 }
@@ -47,7 +47,7 @@ String harga, idproduk, idprodukpenjualan, iddetail, jam, tanggal, sub_total;
       try {
             String sql="insert into penjualan (PenjualanID,DetailID,TanggalPenjualan,JamPenjualan,TotalHarga) value (?,?,?,?,?)";
             pst=konek.prepareStatement(sql);
-            pst.setString(1, IdProduk.getText());
+            pst.setString(1, txtIdPenjualan.getText());
             pst.setString(2, iddetail);
             pst.setString(3, tgl);
             pst.setString(4, jam);
@@ -73,7 +73,7 @@ String harga, idproduk, idprodukpenjualan, iddetail, jam, tanggal, sub_total;
        
        public void cari(){
     try {
-        String sql="select * from produk where ProdukID LIKE '%"+IdProduk.getText()+"%'";
+        String sql="select * from produk where ProdukID LIKE '%"+txtIdProduk.getText()+"%'";
         pst=konek.prepareStatement(sql);
         rst=pst.executeQuery();
         tblProduk.setModel(DbUtils.resultSetToTableModel(rst));
@@ -94,7 +94,7 @@ String harga, idproduk, idprodukpenjualan, iddetail, jam, tanggal, sub_total;
     }
        
        public void tambah_stok(){
-    tambahstok=inputjumlah+inputstok;
+    tambahstok=inputjumlah+inputstok2;
         try {
         String update="update produk set Stok='"+tambahstok+"' where ProdukID='"+idproduk+"'";
         pst2=konek.prepareStatement(update);
@@ -110,7 +110,7 @@ String harga, idproduk, idprodukpenjualan, iddetail, jam, tanggal, sub_total;
     rst=pst.executeQuery();
     if (rst.next()) {    
     String stok=rst.getString(("Stok"));
-    inputstok= Integer.parseInt(stok);
+    inputstok2= Integer.parseInt(stok);
     }
     }catch (Exception e) {
     JOptionPane.showMessageDialog(null, e);}
@@ -119,8 +119,8 @@ String harga, idproduk, idprodukpenjualan, iddetail, jam, tanggal, sub_total;
          public void penjumlahan(){
         int totalBiaya = 0;
         int subtotal;
-        DefaultTableModel dataModel = (DefaultTableModel) tblProduk.getModel();
-        int jumlah = tblProduk.getRowCount();
+        DefaultTableModel dataModel = (DefaultTableModel) tblPenjualan.getModel();
+        int jumlah = tblPenjualan.getRowCount();
         for (int i=0; i<jumlah; i++){
         subtotal = Integer.parseInt(dataModel.getValueAt(i, 4).toString());
         totalBiaya += subtotal;
@@ -135,7 +135,7 @@ String harga, idproduk, idprodukpenjualan, iddetail, jam, tanggal, sub_total;
         rst=pst.executeQuery();
         while (rst.next()) {
                 if (rst.first() == false) {
-                    IdProduk.setText("IDP001");
+                    txtIdPenjualan.setText("IDP001");
                 } else {
                     rst.last();
                     int auto_id = rst.getInt(1) + 1;
@@ -144,7 +144,7 @@ String harga, idproduk, idprodukpenjualan, iddetail, jam, tanggal, sub_total;
                     for (int j = 0; j < 3 - NomorJual; j++) {
                         no = "0" + no;
                     }
-                    IdProduk.setText("IDP" + no);
+                   txtIdPenjualan.setText("IDP" + no);
                 }
             }
         rst.close();
@@ -154,12 +154,12 @@ String harga, idproduk, idprodukpenjualan, iddetail, jam, tanggal, sub_total;
          
           public void detail(){
     try {
-        String Kode_detail=IdProduk.getText();
+        String Kode_detail=txtIdPenjualan.getText();
         String KD="D"+Kode_detail;
         String sql="select * from detailpenjualan where DetailID='"+KD+"'";
         pst=konek.prepareStatement(sql);
         rst=pst.executeQuery();
-        tblProduk.setModel(DbUtils.resultSetToTableModel(rst));
+        tblPenjualan.setModel(DbUtils.resultSetToTableModel(rst));
        } catch (Exception e){ 
            JOptionPane.showMessageDialog(null, e);} 
     }
@@ -195,16 +195,16 @@ String harga, idproduk, idprodukpenjualan, iddetail, jam, tanggal, sub_total;
     private void initComponents() {
 
         jLabel1 = new javax.swing.JLabel();
-        txtCari = new javax.swing.JTextField();
+        txtIdProduk = new javax.swing.JTextField();
         btnCari = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblProduk = new javax.swing.JTable();
         btnTambah = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
-        txtKodeTransaksi = new javax.swing.JTextField();
+        txtIdPenjualan = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
-        tblKodeTransaksi = new javax.swing.JTable();
+        tblPenjualan = new javax.swing.JTable();
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
@@ -218,7 +218,7 @@ String harga, idproduk, idprodukpenjualan, iddetail, jam, tanggal, sub_total;
         txtTanggal = new javax.swing.JTextField();
         jLabel7 = new javax.swing.JLabel();
         txtJumlah = new javax.swing.JTextField();
-        IdProduk = new javax.swing.JLabel();
+        jLabel8 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -264,10 +264,12 @@ String harga, idproduk, idprodukpenjualan, iddetail, jam, tanggal, sub_total;
         jLabel2.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
         jLabel2.setText("Kode Transaksi");
 
+        txtIdPenjualan.setEnabled(false);
+
         jLabel3.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
         jLabel3.setText("Data Transaksi");
 
-        tblKodeTransaksi.setModel(new javax.swing.table.DefaultTableModel(
+        tblPenjualan.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
                 {null, null, null, null},
@@ -278,12 +280,12 @@ String harga, idproduk, idprodukpenjualan, iddetail, jam, tanggal, sub_total;
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
-        tblKodeTransaksi.addMouseListener(new java.awt.event.MouseAdapter() {
+        tblPenjualan.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                tblKodeTransaksiMouseClicked(evt);
+                tblPenjualanMouseClicked(evt);
             }
         });
-        jScrollPane2.setViewportView(tblKodeTransaksi);
+        jScrollPane2.setViewportView(tblPenjualan);
 
         jLabel4.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
         jLabel4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Image/icons8-bill-20.png"))); // NOI18N
@@ -296,6 +298,10 @@ String harga, idproduk, idprodukpenjualan, iddetail, jam, tanggal, sub_total;
         jLabel6.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
         jLabel6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Image/icons8-return-20.png"))); // NOI18N
         jLabel6.setText("Kembalian");
+
+        txtTotal.setEnabled(false);
+
+        txtKembalian.setEnabled(false);
 
         btnHapus.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
         btnHapus.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Image/icons8-delete-20 (1).png"))); // NOI18N
@@ -324,11 +330,15 @@ String harga, idproduk, idprodukpenjualan, iddetail, jam, tanggal, sub_total;
             }
         });
 
+        txtJam.setEnabled(false);
+
+        txtTanggal.setEnabled(false);
+
         jLabel7.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
         jLabel7.setText("JUMLAH");
 
-        IdProduk.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
-        IdProduk.setText("Masukan Id Produk");
+        jLabel8.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
+        jLabel8.setText("Masukan Id Produk");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -355,15 +365,9 @@ String harga, idproduk, idprodukpenjualan, iddetail, jam, tanggal, sub_total;
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jLabel2)
                                 .addGap(18, 18, 18)
-                                .addComponent(txtKodeTransaksi, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(txtIdPenjualan, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(43, 43, 43)
-                                .addComponent(jLabel7)
-                                .addGap(41, 41, 41)
-                                .addComponent(btnTambah))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(txtCari, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(txtIdProduk, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(btnCari))
                             .addGroup(layout.createSequentialGroup()
@@ -378,7 +382,13 @@ String harga, idproduk, idprodukpenjualan, iddetail, jam, tanggal, sub_total;
                                         .addGap(39, 39, 39)
                                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                             .addComponent(txtJumlah, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(btnHapus))))))
+                                            .addComponent(btnHapus)))))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(43, 43, 43)
+                                .addComponent(jLabel7)
+                                .addGap(41, 41, 41)
+                                .addComponent(btnTambah)))
                         .addContainerGap(72, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(34, 34, 34)
@@ -389,8 +399,8 @@ String harga, idproduk, idprodukpenjualan, iddetail, jam, tanggal, sub_total;
                         .addComponent(txtTanggal, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(45, 45, 45))))
             .addGroup(layout.createSequentialGroup()
-                .addGap(36, 36, 36)
-                .addComponent(IdProduk)
+                .addGap(40, 40, 40)
+                .addComponent(jLabel8)
                 .addGap(0, 0, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -402,11 +412,11 @@ String harga, idproduk, idprodukpenjualan, iddetail, jam, tanggal, sub_total;
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(txtJam, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(txtTanggal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(32, 32, 32)
-                .addComponent(IdProduk)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGap(24, 24, 24)
+                .addComponent(jLabel8)
+                .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(txtCari, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtIdProduk, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnCari))
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
@@ -424,7 +434,7 @@ String harga, idproduk, idprodukpenjualan, iddetail, jam, tanggal, sub_total;
                                 .addComponent(txtJumlah, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                 .addGap(39, 39, 39)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(txtKodeTransaksi, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtIdPenjualan, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel2))
                 .addGap(18, 18, 18)
                 .addComponent(jLabel3)
@@ -452,7 +462,7 @@ String harga, idproduk, idprodukpenjualan, iddetail, jam, tanggal, sub_total;
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(btnBayar)
                             .addComponent(btnKeluar))))
-                .addContainerGap(29, Short.MAX_VALUE))
+                .addContainerGap(31, Short.MAX_VALUE))
         );
 
         pack();
@@ -467,7 +477,7 @@ cari();
 subtotal();
         kurangi_stok();
         try {
-            String Kode_detail=IdProduk.getText();
+            String Kode_detail=txtIdPenjualan.getText();
             iddetail="D"+Kode_detail;
             String sql="insert into detailpenjualan (DetailID,ProdukID,Harga,JumlahProduk,Subtotal) value (?,?,?,?,?)";
             String update="update produk set Stok='"+kurangistok+"' where ProdukID='"+idproduk+"'";
@@ -514,7 +524,7 @@ total();
      txtTotal.setText("");
      txtBayar.setText("");
      txtKembalian.setText("");
-     IdProduk.setText("");
+     txtIdProduk.setText("");
      cari();
         // TODO add your handling code here:
     }//GEN-LAST:event_btnBayarActionPerformed
@@ -545,10 +555,10 @@ try {
         // TODO add your handling code here:
     }//GEN-LAST:event_tblProdukMouseClicked
 
-    private void tblKodeTransaksiMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblKodeTransaksiMouseClicked
+    private void tblPenjualanMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblPenjualanMouseClicked
 try {
-    int row=tblKodeTransaksi.getSelectedRow();
-    idprodukpenjualan=(tblKodeTransaksi.getModel().getValueAt(row, 1).toString());
+    int row=tblPenjualan.getSelectedRow();
+    idprodukpenjualan=(tblPenjualan.getModel().getValueAt(row, 1).toString());
     String sql="select * from detailpenjualan where ProdukID='"+idprodukpenjualan+"'";
     pst=konek.prepareStatement(sql);
     rst=pst.executeQuery();
@@ -561,7 +571,7 @@ try {
 }
 ambil_stock();
         // TODO add your handling code here:
-    }//GEN-LAST:event_tblKodeTransaksiMouseClicked
+    }//GEN-LAST:event_tblPenjualanMouseClicked
 
     /**
      * @param args the command line arguments
@@ -599,7 +609,6 @@ ambil_stock();
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel IdProduk;
     private javax.swing.JButton btnBayar;
     private javax.swing.JButton btnCari;
     private javax.swing.JButton btnHapus;
@@ -612,16 +621,17 @@ ambil_stock();
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JTable tblKodeTransaksi;
+    private javax.swing.JTable tblPenjualan;
     private javax.swing.JTable tblProduk;
     private javax.swing.JTextField txtBayar;
-    private javax.swing.JTextField txtCari;
+    private javax.swing.JTextField txtIdPenjualan;
+    private javax.swing.JTextField txtIdProduk;
     private javax.swing.JTextField txtJam;
     private javax.swing.JTextField txtJumlah;
     private javax.swing.JTextField txtKembalian;
-    private javax.swing.JTextField txtKodeTransaksi;
     private javax.swing.JTextField txtTanggal;
     private javax.swing.JTextField txtTotal;
     // End of variables declaration//GEN-END:variables
